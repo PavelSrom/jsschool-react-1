@@ -27,26 +27,26 @@ export const useFetch = <T>(
   })
 
   useEffect(() => {
-    ;(() => {
+    if (enabled) setStatus(prev => ({ ...prev, isLoading: true }))
+
+    // artificial delay to simulate loading behavior
+    const timeout = setTimeout(() => {
       // fire request only if we are allowed to do so
       if (enabled) {
-        setStatus({ ...status, isLoading: true })
-
-        // artificial delay to simulate loading behavior
-        setTimeout(async () => {
-          try {
-            const response = await axios.get(url)
-
+        axios
+          .get(url)
+          .then(({ data }) => {
             setStatus(prev => ({ ...prev, isSuccess: true }))
-            setData(response.data)
-          } catch (err) {
-            setStatus(prev => ({ ...prev, isError: true }))
-          } finally {
-            setStatus(prev => ({ ...prev, isLoading: false }))
-          }
-        }, 1000)
+            setData(data)
+          })
+          .catch(() => setStatus(prev => ({ ...prev, isError: true })))
+          .finally(() => setStatus(prev => ({ ...prev, isLoading: false })))
       }
-    })()
+
+      return () => {
+        clearTimeout(timeout)
+      }
+    }, 1000)
 
     // eslint-disable-next-line
   }, deps)
