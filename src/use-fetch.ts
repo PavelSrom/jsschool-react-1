@@ -42,11 +42,12 @@ export const useFetch = <T>(
           .catch(() => setStatus(prev => ({ ...prev, isError: true })))
           .finally(() => setStatus(prev => ({ ...prev, isLoading: false })))
       }
-
-      return () => {
-        clearTimeout(timeout)
-      }
     }, 1000)
+
+    // prevent memory leaks
+    return () => {
+      clearTimeout(timeout)
+    }
 
     // eslint-disable-next-line
   }, deps)
