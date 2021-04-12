@@ -1,5 +1,5 @@
-import { Button } from "antd"
-import type { Post as PostType } from "../types"
+import { Button } from 'antd'
+import type { Post as PostType } from '../types'
 
 const PlusRectangleFilled: React.FC = () => (
   <svg
